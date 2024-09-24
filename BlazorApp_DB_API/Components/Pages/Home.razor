@@ -1,0 +1,70 @@
+﻿@page "/"
+
+@using BlazorApp_DB_API.ViewModel
+@using Microsoft.AspNetCore.Components.QuickGrid
+@inject HttpClient HttpClient
+
+<PageTitle>Home</PageTitle>
+
+<h3>Felhasználók:</h3>
+<table>
+    <thead>
+        <tr>
+            <th>Név</th>
+            <th>E-mail</th>
+            <th>Jelszó</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in userList)
+        {
+            <tr>
+                <th>@user.FullName</th>
+                <th>@user.Email</th>
+                <th>@user.Password</th>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="/addnewuser" class="btn btn-outline-primary">Add new user</a>
+
+@* Grid megjelenítése *@
+@if(userGrid is null)
+{
+    <p>Loading....</p>
+}
+else
+{
+    <div class="guickgrid">
+        <QuickGrid ItemsProvider="@userGrid" >
+            <PropertyColumn Title="Név" Property="@(fn=>fn.FullName)"/>
+            <PropertyColumn Title="E-mail" Property="@(e=>e.Email)"/>
+
+                <TemplateColumn Context="user">
+                    <a  class="btn btn-outline-info">Edit</a>
+                    <a  class="btn btn-outline-danger">Delete</a>
+                </TemplateColumn>
+
+        </QuickGrid>
+    </div>
+}
+
+@code{
+    List<UserVM> userList = new(); //az elemek betöltéséhez szükséges példány
+
+    GridItemsProvider<UserVM>? userGrid; //távoli adatok megjelenítése quickgrid-hez
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        userList = await HttpClient.GetFromJsonAsync<List<UserVM>>("api/user");
+
+        //inicializálom a lista alapján
+        userGrid = async request =>
+        {
+            return GridItemsProviderResult.From(userList, userList.Count);
+        };
+    }
+}
