@@ -1,0 +1,57 @@
+﻿@page "/deleteuser"
+@using BlazorApp_DB_API.ViewModel
+@inject HttpClient HttpClient
+@inject NavigationManager NavManager
+
+<h3>Delete</h3>
+ <div>
+     @if (deleteUser is null)
+    {
+        <p>Loading...</p>
+    }
+    else
+    {
+        <dl class="row">
+            <dt class="col-sm-2">Név</dt>
+            <dd class="col-sm-10">@deleteUser.FullName</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">E-mail</dt>
+            <dd class="col-sm-10">@deleteUser.Email</dd>
+        </dl>
+
+        <div class="row">
+            <div class="col-md-4">
+                <EditForm Model="deleteUser" OnValidSubmit="DeleteUser" FormName="DeleteUser" Enhance>
+                   <button type="submit" class="btn btn-danger md-4">Delete</button>
+                   <a href="/" class="btn btn-success">Back</a>
+                </EditForm>
+            </div>
+        </div>
+    }
+</div>
+
+
+@code {
+    private UserVM deleteUser;
+
+    [SupplyParameterFromQuery]
+    private int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userList = await HttpClient.GetFromJsonAsync<List<UserVM>>("api/user");
+        if (userList is not null)
+        {
+            deleteUser = userList.FirstOrDefault(u => u.Id == Id);
+        }
+        else
+        {
+            NavManager.NavigateTo("/error");
+        }
+    }
+    public async Task DeleteUser()
+    {
+        
+    }
+}

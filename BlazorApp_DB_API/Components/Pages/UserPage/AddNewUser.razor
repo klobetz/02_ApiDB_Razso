@@ -1,5 +1,8 @@
 ﻿@page "/addnewuser"
 @using BlazorApp_DB_API.ViewModel
+@inject HttpClient HttpClient
+@inject NavigationManager NavManager
+
 <h3>AddNewUser</h3>
 <div class="row">
     <div class="col-md-4">
@@ -11,6 +14,24 @@
                 <label for="vn" class="form-label">Vezetéknév</label>
                 <InputText id="vn" @bind-Value="newUser.FName" class="form-control"/>
                 <ValidationMessage For="()=>newUser.FName" class="text-danger"/>
+            </div>
+
+            <div class="mb-3">
+                <label for="vn" class="form-label">Keresztnév</label>
+                <InputText id="vn" @bind-Value="newUser.LName" class="form-control"/>
+                <ValidationMessage For="()=>newUser.LName" class="text-danger"/>
+            </div>
+
+            <div class="mb-3">
+                <label for="vn" class="form-label">E-mail</label>
+                <InputText id="vn" @bind-Value="newUser.Email" class="form-control"/>
+                <ValidationMessage For="()=>newUser.Email" class="text-danger"/>
+            </div>
+
+            <div class="mb-3">
+                <label for="vn" class="form-label">Jelszó</label>
+                <InputText id="vn" @bind-Value="newUser.Password" class="form-control" />
+                <ValidationMessage For="()=>newUser.Password" class="text-danger" />
             </div>
 
             <button type="submit" class="btn btn-primary md-4">Save</button>
@@ -25,6 +46,10 @@
 
     private async Task AddUser()
     {
-        
+        var response = await HttpClient.PostAsJsonAsync("api/user", newUser);
+        if (response.IsSuccessStatusCode)
+        {
+            NavManager.NavigateTo("/");
+        }
     }
 }

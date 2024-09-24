@@ -42,8 +42,8 @@ else
             <PropertyColumn Title="E-mail" Property="@(e=>e.Email)"/>
 
                 <TemplateColumn Context="user">
-                    <a  class="btn btn-outline-info">Edit</a>
-                    <a  class="btn btn-outline-danger">Delete</a>
+                    <a href="@($"/edituser?Id={user.Id}")" class="btn btn-outline-info">Edit</a>
+                    <a href="@($"/deleteuser?Id={user.Id}")" class="btn btn-outline-danger">Delete</a>
                 </TemplateColumn>
 
         </QuickGrid>

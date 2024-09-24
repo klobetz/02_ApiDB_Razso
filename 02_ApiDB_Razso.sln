@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API_DB", "API_DB\API_DB.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorApp_DB_API", "BlazorApp_DB_API\BlazorApp_DB_API.csproj", "{2C2237C2-AA85-49B6-93FC-991B3ADF2F51}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp_to_API", "ConsoleApp_to_API\ConsoleApp_to_API.csproj", "{DDB22BFE-26D0-4CC3-AC36-D6636B30D813}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp_to_API", "ConsoleApp_to_API\ConsoleApp_to_API.csproj", "{DDB22BFE-26D0-4CC3-AC36-D6636B30D813}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,0 +1,64 @@
+﻿@page "/edituser"
+@using BlazorApp_DB_API.ViewModel
+@inject HttpClient HttpClient
+@inject NavigationManager NavManager
+
+<h3>Edit user</h3>
+@if (editUser is null)
+{
+    <p>Loading....</p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm Model="editUser" OnValidSubmit="EditUser" FormName="EditUser" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary class="text-danger" />
+
+                <div class="mb-3">
+                    <label for="vn" class="form-label">Vezetéknév</label>
+                    <InputText id="vn" @bind-Value="editUser.FName" class="form-control" />
+                    <ValidationMessage For="()=>editUser.FName" class="text-danger" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="vn" class="form-label">Keresztnév</label>
+                    <InputText id="vn" @bind-Value="editUser.LName" class="form-control" />
+                    <ValidationMessage For="()=>editUser.LName" class="text-danger" />
+                </div>
+
+                
+
+                <button type="submit" class="btn btn-primary md-4">Save</button>
+                <a href="/" class="btn btn-success">Back</a>
+            </EditForm>
+        </div>
+    </div>
+}
+
+@code {
+    [SupplyParameterFromQuery]
+    private int Id {get;set;}
+
+    [SupplyParameterFromForm]
+    private UserVM editUser { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var userList = await HttpClient.GetFromJsonAsync<List<UserVM>>("api/user");
+        if (userList is not null)
+        {
+            editUser = userList.FirstOrDefault(u => u.Id == Id);
+        }else
+        {
+            NavManager.NavigateTo("/error");
+        }
+    }
+
+    private async Task EditUser()
+    {
+        
+    }
+
+}
