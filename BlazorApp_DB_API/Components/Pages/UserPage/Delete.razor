@@ -38,6 +38,8 @@
     [SupplyParameterFromQuery]
     private int Id { get; set; }
 
+    private string errormessage = "";
+
     protected override async Task OnInitializedAsync()
     {
         var userList = await HttpClient.GetFromJsonAsync<List<UserVM>>("api/user");
@@ -52,6 +54,21 @@
     }
     public async Task DeleteUser()
     {
-        
+        try
+        {
+            var response = await HttpClient.DeleteAsync($"api/User/{Id}");
+            if (response.IsSuccessStatusCode)
+            {
+                NavManager.NavigateTo("/");
+            }
+            else
+            {
+                NavManager.NavigateTo("/error");
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            errormessage = $"Request error: {ex.Message}";
+        }
     }
 }

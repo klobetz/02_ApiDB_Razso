@@ -46,6 +46,42 @@ namespace API_DB.Controllers
             return Ok(await _dbContext.users.ToListAsync()); //ezzel a kapott eredményt látni fogom!! egyből
         }
 
+        //felhasználó frissítése és módosítása
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<ActionResult<List<User>>>UpdateUser(int id, [FromBody] User updateUser)
+        {
+            var selectUser = await _dbContext.users.FindAsync(id);
+            if (selectUser == null)
+            {
+                return NotFound("The user was not found!");
+            }
+            else
+            {
+                selectUser.FName = updateUser.FName;
+                selectUser.LName = updateUser.LName;
+                selectUser.Email = updateUser.Email;
+                selectUser.Password = updateUser.Password;
+            }
+            await _dbContext.SaveChangesAsync();
+            return Ok(await _dbContext.users.ToListAsync());
+        }
+
+        //felhasználó törlése
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<ActionResult<List<User>>> DeleteUser(int id) 
+        {
+            var deleteUser = await _dbContext.users.FindAsync(id);  //megkeresem az első találatot a DB-ben id alapján
+            if (deleteUser == null)
+            {
+                return NotFound("the usei was not found!"); //ha hiba van akkor visszatérek ezzel az üzenettel!
+            }
+            _dbContext.users.Remove(deleteUser); //fogom és kitörlöm
+            await _dbContext.SaveChangesAsync(); //menti a DB-t
+            return Ok(await _dbContext.users.ToListAsync()); //visszatérünk az adattal hogy megjelenjen
+
+        }
 
 
 

@@ -2,6 +2,7 @@
 @using BlazorApp_DB_API.ViewModel
 @inject HttpClient HttpClient
 @inject NavigationManager NavManager
+@rendermode InteractiveServer
 
 <h3>Edit user</h3>
 @if (editUser is null)
@@ -17,24 +18,23 @@ else
                 <ValidationSummary class="text-danger" />
 
                 <div class="mb-3">
-                    <label for="vn" class="form-label">Vezetéknév</label>
-                    <InputText id="vn" @bind-Value="editUser.FName" class="form-control" />
+                    <label for="fn" class="form-label">Vezetéknév</label>
+                    <InputText id="fn" @bind-Value="editUser.FName" class="form-control" />
                     <ValidationMessage For="()=>editUser.FName" class="text-danger" />
                 </div>
 
                 <div class="mb-3">
-                    <label for="vn" class="form-label">Keresztnév</label>
-                    <InputText id="vn" @bind-Value="editUser.LName" class="form-control" />
+                    <label for="ln" class="form-label">Keresztnév</label>
+                    <InputText id="ln" @bind-Value="editUser.LName" class="form-control" />
                     <ValidationMessage For="()=>editUser.LName" class="text-danger" />
-                </div>
-
-                
+                </div>               
 
                 <button type="submit" class="btn btn-primary md-4">Save</button>
                 <a href="/" class="btn btn-success">Back</a>
             </EditForm>
         </div>
     </div>
+    @errormessage
 }
 
 @code {
@@ -42,7 +42,9 @@ else
     private int Id {get;set;}
 
     [SupplyParameterFromForm]
-    private UserVM editUser { get; set; }
+    private UserVM? editUser { get; set; }
+
+    private string errormessage = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -58,7 +60,22 @@ else
 
     private async Task EditUser()
     {
-        
+        try
+        {
+            var response = await HttpClient.PutAsJsonAsync<UserVM>($"api/User/{Id}", editUser);
+            if (response.IsSuccessStatusCode)
+            {
+                NavManager.NavigateTo("/");
+            }
+            else
+            {
+                NavManager.NavigateTo("/error");                
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+                errormessage = $"Request error: {ex.Message}";
+        }
     }
 
 }
